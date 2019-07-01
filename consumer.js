@@ -8,8 +8,6 @@ async function init () {
 
   await channel.prefetch(1)
 
-  await channel.assertExchange('logs', 'fanout', {durable: false})
-
   channel.consume('task_queue', (msg) => {
     const body = msg.content.toString();
     console.log(" [x] Received '%s'", body);
@@ -19,7 +17,7 @@ async function init () {
 
       const message = 'new log'
 
-      channel.publish('logs', '', Buffer.from(message));
+      channel.sendToQueue(msg.properties.replyTo, Buffer.from(message));
       console.log(" [x] Sent log '%s'", message);
 
       channel.ack(msg);
