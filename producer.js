@@ -7,7 +7,6 @@ async function init () {
   const channel = await connection.createChannel()
 
   const assetQueue = await channel.assertQueue('', { exclusive: true });
-  // await channel.bindQueue(assetQueue.queue, 'logs', '')
 
   channel.sendToQueue('task_queue', Buffer.from(msg), { replyTo: assetQueue.queue });
   console.log(" [x] Sent '%s'", msg);
